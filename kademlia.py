@@ -149,44 +149,38 @@ class ID:
     def __xor__(self, val) -> int:
         if type(val) == ID:
             return self.value ^ val.value
-        else:
-            return self.value ^ val
+        return self.value ^ val
 
     def __eq__(self, val) -> bool:
         if type(val) == ID:
             return self.value == val.value
-        else:
-            return self.value == val
+        return self.value == val
 
-    def __ge__(self, val):
+    def __ge__(self, val) -> bool:
         if type(val) == ID:
             return self.value >= val.value
-        else:
-            return self.value >= val
+        return self.value >= val
 
-    def __le__(self, val):
+    def __le__(self, val) -> bool:
         if type(val) == ID:
             return self.value <= val.value
-        else:
-            return self.value <= val
+        return self.value <= val
 
-    def __lt__(self, val):
+    def __lt__(self, val) -> bool:
         if type(val) == ID:
             return self.value < val.value
-        else:
-            return self.value < val
+        return self.value < val
 
-    def __gt__(self, val):
+    def __gt__(self, val) -> bool:
         if type(val) == ID:
             return self.value > val.value
-        else:
-            return self.value > val
+        return self.value > val
 
     def __str__(self) -> str:
         return str(self.denary())
 
     @classmethod
-    def max(cls):
+    def max(cls) -> ID:
         """
         Returns max ID.
         :return: max ID.
@@ -194,7 +188,7 @@ class ID:
         return ID(2 ** 160 - 1)
 
     @classmethod
-    def mid(cls):
+    def mid(cls) -> ID:
         """
         returns middle of the road ID
         :return: middle ID.
@@ -202,7 +196,7 @@ class ID:
         return ID(2 ** 159)
 
     @classmethod
-    def min(cls):
+    def min(cls) -> ID:
         """
         Returns minimum ID.
         :return: minimum ID.
@@ -210,7 +204,7 @@ class ID:
         return ID(0)
 
     @classmethod
-    def random_id_within_bucket_range(cls, bucket):
+    def random_id_within_bucket_range(cls, bucket) -> ID:
         """
         Returns an ID within the range of the bucket's low and high range.
         THIS IS NOT AN ID IN THE BUCKETS CONTACT LIST!
@@ -222,7 +216,7 @@ class ID:
         return ID(bucket.low() + random.randint(0, bucket.high() - bucket.low()))
 
     @classmethod
-    def random_id(cls, low=0, high=2 ** 160, seed=None):
+    def random_id(cls, low=0, high=2 ** 160, seed=None) -> ID:
         """
         Generates a random ID, including both endpoints.
 
@@ -286,7 +280,7 @@ class Contact:
         self.id = id
         self.last_seen: datetime = datetime.now()
 
-    def touch(self):
+    def touch(self) -> None:
         """Updates the last time the contact was seen."""
         self.last_seen = datetime.now()
 
@@ -302,7 +296,6 @@ class QueryReturn(TypedDict):
 
 
 class Node:
-
     def __init__(self,
                  contact: Contact,
                  storage: IStorage,
@@ -395,7 +388,6 @@ class Node:
 
 
 class KBucket:
-
     def __init__(self,
                  initial_contacts: list[Contact] = None,
                  low: int = 0,
@@ -413,10 +405,10 @@ class KBucket:
         self.time_stamp: datetime = datetime.now()
         # self.lock = WithLock(Lock())
 
-    def low(self):
+    def low(self) -> int:
         return self._low
 
-    def high(self):
+    def high(self) -> int:
         return self._high
 
     def is_full(self) -> bool:
@@ -445,7 +437,7 @@ class KBucket:
         """
         return self._low <= other_id.value <= self._high
 
-    def add_contact(self, contact: Contact):
+    def add_contact(self, contact: Contact) -> None:
         # TODO: Check if this is meant to check if it exists in the bucket.
         if self.is_full():
             raise TooManyContactsError(
@@ -495,7 +487,7 @@ class KBucket:
 
         return longest_prefix
 
-    def split(self) -> tuple:
+    def split(self) -> tuple[KBucket, KBucket]:
         """
         Splits KBucket in half, returns tuple of type (KBucket, KBucket).
         """
@@ -723,6 +715,7 @@ class Router:
         for i in nodes_to_query:
             if i not in contacted_nodes:
                 contacted_nodes.append(i)
+
 
         # In the spec they then send parallel async find_node RPC commands
         query_result: QueryReturn = (self.query(key, nodes_to_query, rpc_call,
@@ -1148,7 +1141,7 @@ class DHT:
                     self.node.bucket_list.add_contact(other_contact)
 
 
-def empty_node():
+def empty_node() -> Node:
     """
     For testing.
     :return:
@@ -1156,7 +1149,7 @@ def empty_node():
     return Node(Contact(id=ID(0)), storage=VirtualStorage())
 
 
-def random_node():
+def random_node() -> Node:
     return Node(Contact(id=ID.random_id()), storage=VirtualStorage())
 
 
