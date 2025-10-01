@@ -5,16 +5,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from time import sleep
 from typing import Optional, Callable
 
-from kademlia_dht.constants import Constants
-from kademlia_dht.dictionaries import (PingRequest, StoreRequest, FindNodeRequest,
+from .constants import Constants
+from .dictionaries import (PingRequest, StoreRequest, FindNodeRequest,
                                        FindValueRequest, ErrorResponse,
                                        CommonRequest, PingSubnetRequest,
                                        StoreSubnetRequest, FindNodeSubnetRequest,
                                        FindValueSubnetRequest)
-from kademlia_dht.errors import IncorrectProtocolError
-from kademlia_dht.id import ID
-from kademlia_dht.node import Node
-from kademlia_dht.protocols import TCPProtocol, decode_protocol
+
+from .errors import IncorrectProtocolError
+from .id import ID
+from .node import Node
+from .protocols import TCPProtocol, decode_protocol
 
 logger = logging.getLogger("__main__")
 
